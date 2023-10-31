@@ -208,7 +208,6 @@ mod menu {
 
 
 fn main() {
-
     
     let mut bill_list = Bills::new(); //Creating a new instance of Bills to store the bills
 
