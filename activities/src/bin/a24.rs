@@ -10,4 +10,10 @@
 
 fn main() {
     let data = vec![1, 2, 3, 4, 5];
+
+    let iter = data.iter().map(|x| x * 3).filter(|&c| c > 10);
+
+    for value in iter {
+        println!("{}", value);
+    }
 }

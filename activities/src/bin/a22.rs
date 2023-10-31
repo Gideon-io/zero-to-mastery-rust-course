@@ -31,4 +31,31 @@ fn concat(first: &str, second: &str) -> String {
     format!("{} {}", first, second)
 }
 
-fn main() {}
+fn main() {
+  
+}
+
+#[cfg(test)]
+mod test {
+    use crate::*;
+
+    #[test]
+    fn test_camp() {
+        let result = clamp(5,6,7);
+        let expected = 6;
+        assert_eq!(result,expected, "is not equal to 6");
+    }
+    #[test]
+    fn test_div() {
+        let result = div(10,2);
+        let expected = Some(5);
+        assert_eq!(result,expected, "does not divide")
+    }
+    #[test]
+    fn test_concat() {
+        let result = concat("hello", "world");
+        let expected = "hello world".to_string();
+        assert_eq!(result, expected, "words failed to concat");
+    }
+
+}

@@ -1,3 +1,5 @@
+
+
 // Topic: User input
 //
 // Requirements:
@@ -23,4 +25,44 @@
 // * The program should be case-insensitive (the user should be able to type
 //   Reboot, reboot, REBOOT, etc.)
 
-fn main() {}
+use std::io;
+enum State {
+    Off,
+    Sleep,
+    Reboot,
+    Shutdown,
+    Hibernate,
+}
+
+fn user_input() -> io::Result<String> {
+    let mut buffer = String::new();
+    io::stdin().read_line(&mut buffer)?;
+    Ok(buffer.trim().to_owned())
+}
+
+fn print(input: State) {
+    match input {
+        State::Off => println!("PC is switching off"),
+        State::Sleep => println!("PC is going to sleep"),
+        State::Reboot => println!("PC is going to reboot"),
+        State::Shutdown => println!("PC is shutting down"),
+        State::Hibernate => println!("PC is going into hibernation mode"),
+        _ => ()
+
+    }
+}
+fn main() {
+    println!("Please type the action for the PC");
+    let user_input = user_input();
+    match user_input {
+        Ok(input) => match input.to_lowercase().as_str() {
+            "off" => print(State::Off),
+            "sleep" => print(State::Sleep),
+            "reboot" => print(State::Reboot),
+            "shutdown" => print(State::Shutdown),
+            "hibernate" => print(State::Hibernate),
+            _ => (),
+        }
+        Err(err) => println!("{}", err)
+    }
+}

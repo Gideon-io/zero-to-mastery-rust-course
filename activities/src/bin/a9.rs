@@ -8,5 +8,18 @@
 // * Use a function that returns a tuple
 // * Destructure the return value into two variables
 // * Use an if..else if..else block to determine what to print
+fn tuple_return() -> (i32, i32) {
+    (5, 6)
+}
+fn main() {
+    let (x,y) = tuple_return();
 
-fn main() {}
+    if y > 5 {
+        println!("greater than 5");
+    }
+    else if y < 5 {
+        println!("less than 5");
+    }
+    else {println!("equal to 5");}
+
+}
