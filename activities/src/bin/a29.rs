@@ -35,4 +35,16 @@ impl Priority for Guest {
     }
 }
 
-fn main() {}
+fn process_priority<T: Priority + std::fmt::Debug> (guest: T) {  //std::.. constraint added via recommendation from the compiler
+
+    println!("Guest name: {:?}", guest);
+
+    println!("Priority: {:?}", guest.get_priority());
+}
+fn main() {
+    let taras = Guest{};
+    let albert = ImportantGuest{};
+
+    process_priority(taras);
+    process_priority(albert);
+}
