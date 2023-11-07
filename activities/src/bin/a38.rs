@@ -7,7 +7,7 @@
 //
 // Notes:
 // * Use the join function to wait for threads to finish
-use std::thread;
+
 use std::thread::spawn;
 
 fn msg_hello() -> &'static str {
@@ -29,7 +29,10 @@ fn msg_excited() -> &'static str {
 }
 
 fn main() {
-    let hello_handle = thread::spawn(|| msg_hello());
+
+    use std::thread;
+
+    let hello_handle = thread::spawn(move || msg_hello());
 
     let thread_handle = thread::spawn(|| msg_thread());
 
