@@ -9,6 +9,7 @@ edition = "2018"
 
 chrono = "0.4.31"
 
-[lib]
-name = "activity"
-path = "/Users/offbeatkey/Documents/Rust/Github/zero-to-mastery/rust-course/zero-to-mastery-rust-course/src/activities/src/bin/activitylib.rs"
+
+#[lib]
+#name = "activity"
+#path = "/Users/offbeatkey/Documents/Rust/Github/zero-to-mastery/rust-course/zero-to-mastery-rust-course/src/activities/src/bin/activitylib.rs"
