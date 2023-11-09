@@ -34,9 +34,9 @@ fn main() {
 
     let hello_handle = thread::spawn(move || msg_hello());
 
-    let thread_handle = thread::spawn(|| msg_thread());
+    let thread_handle = thread::spawn(move || msg_thread());
 
-    let excited_handle = thread::spawn(|| msg_excited());
+    let excited_handle = thread::spawn(|| msg_excited()); //can also be without the "move" but data will be borrowed
 
     match hello_handle.join() {
         Ok(data) => println!("{}", data),

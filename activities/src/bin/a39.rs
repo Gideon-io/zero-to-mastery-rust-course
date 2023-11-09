@@ -26,8 +26,11 @@ use std::thread::{self, JoinHandle};
 
 enum LightMsg {
     // Add additional variants needed to complete the exercise
+    //PrintData(String),
     ChangeColor(u8, u8, u8),
     Disconnect,
+    Off,
+    On,
 }
 
 enum LightStatus {
@@ -37,9 +40,59 @@ enum LightStatus {
 
 fn spawn_light_thread(receiver: Receiver<LightMsg>) -> JoinHandle<LightStatus> {
     // Add code here to spawn a thread to control the light bulb
-}
+    thread::spawn(move || {
+        let mut light_status = LightStatus::Off;
+        loop {
+            if let Ok(msg) = receiver.recv() {
+                match msg {
+                    LightMsg::ChangeColor(r,g,b) => {
+                        println!("Color changed to: {} {} {}", r,g,b);
 
-fn main() {}
+                        match light_status {
+                            LightStatus::Off => println!("light is currently off"),
+                            LightStatus::On => println!("light is currently on"),
+                        }
+                    },
+
+                    LightMsg::Off => {
+                        println!("Turned light off");
+                        light_status = LightStatus::On;
+                    },
+                    
+                    LightMsg::On => {
+                        println!("Turned light on");
+                        light_status = LightStatus::Off;
+                    },
+
+                    LightMsg::Disconnect => {
+                        println!("Light is now Disconnected");
+                        light_status = LightStatus::Off;
+                        break;
+                    }
+
+                }
+            } else {
+                println!("Channel Disconnected");
+                light_status = LightStatus::Off;
+                break;
+            }
+            
+        }
+        light_status
+    })
+    
+}
+fn main() {
+    let (light_tx, light_rx) = unbounded(); //created the light channel here
+    
+    let light = spawn_light_thread(light_rx);
+
+    light_tx.send(LightMsg::On);
+    light_tx.send(LightMsg::ChangeColor(5, 6, 7));
+    light_tx.send(LightMsg::Disconnect);
+
+    light.join().unwrap();
+}
 
 #[cfg(test)]
 mod test {

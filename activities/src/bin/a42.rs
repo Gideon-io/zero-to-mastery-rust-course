@@ -17,5 +17,59 @@
 // Notes:
 // * Use the .next() method to advance the iterator to confirm it works correctly
 // * Only the Iterator trait needs to be implemented for this activity
+use crossbeam_channel::unbounded;
+use std::thread;
 
-fn main() {}
+enum WorkerMsg {
+    PrintData(String),
+    Sum(i64, i64),
+    Quit,
+}
+
+enum MainMsg {
+    SumResult(i64),
+    WorkerQuit,
+}
+fn main() {
+    let (worker_tx,worker_rx) = unbounded(); //worker channel created with 1 receiving and send end
+    let (main_tx,main_rx) = unbounded();
+
+    let worker = thread::spawn(move || loop {  //creating a worker thread here via spawn
+                                        match worker_rx.recv() {
+                                            Ok(msg) => match msg {
+                                                WorkerMsg::PrintData(msg) => println!("Worker: {}", msg),
+                                                WorkerMsg::Sum(a,b) => {
+                                                    println!("Worker summing");
+                                                    main_tx.send(MainMsg::SumResult(a + b));
+                                                    ()
+                                                }
+                                                WorkerMsg::Quit => {
+                                                println!("Worker thread initiating termination");
+                                                main_tx.send(MainMsg::WorkerQuit);
+                                                break;
+                                                }
+                                            }
+                                            Err(_) => {
+                                                println!("Worker Disconnected");
+                                                main_tx.try_send(MainMsg::WorkerQuit);
+                                                break;
+                                            }
+                                        }
+    });
+                              
+    worker_tx.send(WorkerMsg::PrintData("Hello from main".to_string())).unwrap();
+    worker_tx.send(WorkerMsg::Sum(5,6)).unwrap();
+    worker_tx.send(WorkerMsg::Quit).unwrap();
+    //drop(s); //just to initiate the disconnected message in the Err arm      
+
+    while let Ok(msg) = main_rx.recv() {  //recv is blocked so it will wait until a message comes along. if there is and its Ok perfrom the match
+        match msg {
+            MainMsg::SumResult(answer) => println!("main answer: {}", answer),
+            MainMsg::WorkerQuit => println!("Main has quit")
+        }
+    }      
+
+    worker.join().unwrap();
+    
+
+}
